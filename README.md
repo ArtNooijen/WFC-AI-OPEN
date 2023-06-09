@@ -1,0 +1,1 @@
+[](https://github.com/mateuszbugaj/WaveFunctionCollapse/blob/master/WTC-Red-Maze.ipynb) source
