@@ -41,7 +41,8 @@ def main():
     edge_options = []
     for i in range(5):
         
-        img = load_image(f"./assets/{i}.png", rez)
+        #img = load_image(f"./assets/{i}.png", rez)
+        img = load_image(f"./tiles/circuit/{i}.png", rez)
         
         # load corner tile
         #img = load_image(f"./assets/c{i}.png", rez)
