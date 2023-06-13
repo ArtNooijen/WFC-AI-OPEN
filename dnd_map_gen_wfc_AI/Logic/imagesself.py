@@ -40,7 +40,7 @@ class onlyColorChangePixels():
 
 difficulty = 7
 input_size = (4, 4)
-output_size = (75, 75)#10/50 !
+output_size = (25, 25)#10/50 !
 default_color = 'Spectral'
 colorChangePixels = onlyColorChangePixels()  # Create an instance of the class
 
@@ -175,15 +175,7 @@ def valid_dirs(pos):
     
     return valid_directions
 
-class Index:
-    """
-    Tells which combinations of patterns are allowed for all patterns
-    
-    data (dict):
-        pattern -> posible_connections (dict):
-                    relative_position -> patterns (list)
-    """
-    
+class Index:    
     def __init__(self, patterns: List[Pattern]):
         self.data = {}
         for pattern in patterns:
@@ -222,12 +214,11 @@ def get_offset_tiles(pattern: Pattern, offset: tuple):
         return tuple(pattern.pixels[0][:])
     if offset == (1, 1):
         return tuple([pattern.pixels[0][0]])
-# Generate rules for Index and save them
+
 rules_num = 0
 for pattern in patterns:
     for d in dirs:
         for pattern_next in patterns:
-            # here's checking all offsets 
             overlap = get_offset_tiles(pattern_next, d)
             og_dir = tuple([d[0]*-1, d[1]*-1])
             part_of_og_pattern = get_offset_tiles(pattern, og_dir)
@@ -236,13 +227,7 @@ for pattern in patterns:
                 rules_num+=1
 
 
-def initialize_wave_function(size):
-    """
-    Initialize wave function of the size 'size' where in each tile no patterns are foridden yet.
-    Coefficients describe what patterns can occur in each tile. At the beggining, at every possition there is full set
-    of patterns available
-    """
-    
+def initialize_wave_function(size):    
     coefficients = []
     
     for col in range(size[0]):
@@ -255,9 +240,6 @@ def initialize_wave_function(size):
 coefficients = initialize_wave_function(output_size)
 
 def is_fully_collapsed():
-    """
-    Check if wave function is fully collapsed meaning that for each tile available is only one pattern
-    """
     for col in coefficients:
         for entry in col:
             if(len(entry)>1):
@@ -265,17 +247,12 @@ def is_fully_collapsed():
     return True
 
 def get_possible_patterns_at_position(position):
-    """
-    Return possible patterns at position (x, y)
-    """
     x, y = position
     possible_patterns = coefficients[x][y]
     return possible_patterns
 
 def get_shannon_entropy(position):
-    """
-    Calcualte the Shannon Entropy of the wavefunction at position (x, y)
-    """
+
     x, y = position
     entropy = 0
     
@@ -287,14 +264,10 @@ def get_shannon_entropy(position):
         entropy += probability[pattern] * math.log(probability[pattern], 2)
     entropy *= -1
     
-    # Add noise to break ties and near-ties
     entropy -= random.uniform(0, 0.1)
     return entropy
 
 def get_min_entropy_pos():
-    """
-    Return position of tile with the lowest entropy
-    """
     minEntropy = None
     minEntropyPos = None
     
@@ -312,26 +285,24 @@ def get_min_entropy_pos():
 
 
 def observe():
-    # Find the lowest entropy
     min_entropy_pos = get_min_entropy_pos()
     
     if min_entropy_pos == None:
         print("All tiles have 0 entropy")
         return
     
-    # Choose a pattern at lowest entropy position which is most frequent in the sample
     possible_patterns = get_possible_patterns_at_position(min_entropy_pos)
     
-    # calculate max probability for patterns that are left
     max_p = 0
     for pattern in possible_patterns:
         if max_p < probability[pattern]:
             max_p == probability[pattern]
     
     
-    semi_random_pattern = random.choice([pat for pat in possible_patterns if probability[pat]>=max_p])
-    
-    # Set this pattern to be the only available at this position
+    semi_random_pattern = random.choice([pat for pat in possible_patterns 
+                                         if probability[pat]
+                                         >=max_p])
+    # TODO dont forget to check the probability of the pattern
     coefficients[min_entropy_pos[0]][min_entropy_pos[1]] = semi_random_pattern
     
     return min_entropy_pos
@@ -340,19 +311,14 @@ def observe():
 def propagate(min_entropy_pos):
     stack = [min_entropy_pos]
     
-    
     while len(stack) > 0:
         pos = stack.pop()
         
         possible_patterns = get_possible_patterns_at_position(pos)
-        
-        # Iterate through each location immediately adjacent to the current location
         for d in valid_dirs(pos):
             adjacent_pos = (pos[0] + d[0], pos[1] + d[1])
             possible_patterns_at_adjacent = get_possible_patterns_at_position(adjacent_pos)
             
-            # Iterate over all still available patterns in adjacent tile 
-            # and check if pattern is still possible in this location
             if not isinstance(possible_patterns_at_adjacent, list):
                 possible_patterns_at_adjacent = [possible_patterns_at_adjacent]
             for possible_pattern_at_adjacent in possible_patterns_at_adjacent:
@@ -375,16 +341,12 @@ while not is_fully_collapsed():
 
 final_pixels = []
 
-for i in coefficients:
+for coefficient in coefficients:
     row = []
-    for j in i:
-        if isinstance(j, list):
-            first_pixel = j[0].pixels[0][0]
-        else:
-            first_pixel = j.pixels[0][0]
+    for item in coefficient:
+        first_pixel = item.pixels[0][0] if not isinstance(item, list) else item[0].pixels[0][0]
         row.append(first_pixel)
     final_pixels.append(row)
 
-plt.imshow(final_pixels, cmap= default_color, vmin=0, vmax=255) 
-
+plt.imshow(final_pixels, cmap=default_color, vmin=0, vmax=255)
 plt.show()
