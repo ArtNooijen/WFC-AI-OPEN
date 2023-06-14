@@ -16,31 +16,35 @@ class onlyColorChangePixels():
                     [180, 192, 192, 192],
                     [180, 192, 204, 192],
                     [180, 192, 192, 192]]
-        self.cr3 = [[108, 108, 108, 108],
-                    [108, 120, 120, 120],
+        self.cr3 = [[108, 108, 132, 108],
+                    [108, 120, 132, 120],
                     [108, 120, 132, 120],
                     [108, 120, 120, 120]]
         self.cr4 = [[144, 144, 144, 144],
                     [144, 156, 156, 156],
                     [144, 156, 168, 156],
-                    [144, 156, 156, 156]]
-        self.cr5 = [[72, 72, 72, 72],
-                    [72, 84, 84, 84],
-                    [72, 84, 96, 84],
+                    [144, 156, 48, 156]]
+        self.cr5 = [[72, 84, 72, 72],
+                    [144, 84, 84, 84],
+                    [144, 84, 96, 84],
                     [72, 84, 84, 84]]
         self.cr6 = [[36, 36, 36, 36],
-                    [36, 48, 48, 48],
+                    [48, 48, 48, 48],
                     [36, 48, 60, 48],
                     [36, 48, 48, 48]]
         self.cr7 = [[0, 0, 0, 0],
                     [0, 12, 12, 12],
-                    [0, 12, 24, 12],
+                    [24, 24, 24, 12],
                     [0, 12, 12, 12]]
+        self.cr8 = [[12, 0, 12, 0],
+                    [0, 12, 24, 12],
+                    [12, 24, 24, 24],
+                    [0, 12, 24, 12]]        
 
 
-difficulty = 7
+difficulty = 5
 input_size = (4, 4)
-output_size = (25, 25)#10/50 !
+output_size = (50, 50)#10/50 !
 default_color = 'Spectral'
 colorChangePixels = onlyColorChangePixels()  # Create an instance of the class
 
@@ -58,6 +62,8 @@ if difficulty == 6:
     pixels = colorChangePixels.cr6
 if difficulty == 7:
     pixels = colorChangePixels.cr7
+if difficulty == 8:
+    pixels = colorChangePixels.cr8
 plt.imshow(pixels, cmap= default_color, vmin=0, vmax=255) 
 
 # valid colors 'Accent', 'Accent_r', 'Blues', 'Blues_r', 'BrBG', 'BrBG_r', 'BuGn', 'BuGn_r', 'BuPu', 'BuPu_r', 'CMRmap', 'CMRmap_r', 'Dark2', 'Dark2_r', 'GnBu', 'GnBu_r', 'Greens', 'Greens_r', 'Greys', 'Greys_r', 'OrRd', 'OrRd_r', 'Oranges', 'Oranges_r', 'PRGn', 'PRGn_r', 'Paired', 'Paired_r', 'Pastel1', 'Pastel1_r', 'Pastel2', 'Pastel2_r', 'PiYG', 'PiYG_r', 'PuBu', 'PuBuGn', 'PuBuGn_r', 'PuBu_r', 'PuOr', 'PuOr_r', 'PuRd', 'PuRd_r', 'Purples', 'Purples_r', 'RdBu', 'RdBu_r', 'RdGy', 'RdGy_r', 'RdPu', 'RdPu_r', 'RdYlBu', 'RdYlBu_r', 'RdYlGn', 'RdYlGn_r', 'Reds', 'Reds_r', 'Set1', 'Set1_r', 'Set2', 'Set2_r', 'Set3', 'Set3_r', 'Spectral', 'Spectral_r', 'Wistia', 'Wistia_r', 'YlGn', 'YlGnBu', 'YlGnBu_r', 'YlGn_r', 'YlOrBr', 'YlOrBr_r', 'YlOrRd', 'YlOrRd_r', 'afmhot', 'afmhot_r', 'autumn', 'autumn_r', 'binary', 'binary_r', 'bone', 'bone_r', 'brg', 'brg_r', 'bwr', 'bwr_r', 'cividis', 'cividis_r', 'cool', 'cool_r', 'coolwarm', 'coolwarm_r', 'copper', 'copper_r', 'cubehelix', 'cubehelix_r', 'flag', 'flag_r', 'gist_earth', 'gist_earth_r', 'gist_gray', 'gist_gray_r', 'gist_heat', 'gist_heat_r', 'gist_ncar', 'gist_ncar_r', 'gist_rainbow', 'gist_rainbow_r', 'gist_stern', 'gist_stern_r', 'gist_yarg', 'gist_yarg_r', 'gnuplot', 'gnuplot2', 'gnuplot2_r', 'gnuplot_r', 'gray', 'gray_r', 'hot', 'hot_r', 'hsv', 'hsv_r', 'inferno', 'inferno_r', 'jet', 'jet_r', 'magma', 'magma_r', 'nipy_spectral', 'nipy_spectral_r', 'ocean', 'ocean_r', 'pink', 'pink_r', 'plasma', 'plasma_r', 'prism', 'prism_r', 'rainbow', 'rainbow_r', 'seismic', 'seismic_r', 'spring', 'spring_r', 'summer', 'summer_r', 'tab10', 'tab10_r', 'tab20', 'tab20_r', 'tab20b', 'tab20b_r', 'tab20c', 'tab20c_r', 'terrain', 'terrain_r', 'turbo', 'turbo_r', 'twilight', 'twilight_r', 'twilight_shifted', 'twilight_shifted_r', 'viridis', 'viridis_r', 'winter', 'winter_r'
@@ -174,6 +180,7 @@ def valid_dirs(pos):
             valid_directions.extend([UP, UP_LEFT, UP_RIGHT, DOWN, DOWN_LEFT, DOWN_RIGHT])
     
     return valid_directions
+
 
 class Index:    
     def __init__(self, patterns: List[Pattern]):
@@ -348,5 +355,14 @@ for coefficient in coefficients:
         row.append(first_pixel)
     final_pixels.append(row)
 
+
+def combined_final_pixels(final_pixels):
+    combined_pixels = []
+    for row in final_pixels:
+        combined_row = []
+        for pixel in row:
+            combined_row.append(pixel[0])
+        combined_pixels.append(combined_row)
+    return combined_pixels
 plt.imshow(final_pixels, cmap=default_color, vmin=0, vmax=255)
 plt.show()
