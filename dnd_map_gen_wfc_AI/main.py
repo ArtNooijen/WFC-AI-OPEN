@@ -21,10 +21,13 @@ diff = difficultyPixels()
 patternLogic = PatternLogic()
 show_old_map = True
 show_steps = False
-default_color = 'Spectral'
-input_size = (4, 4)
+default_color ='Spectral'
+#base (4,4)
+input_size = (8, 8 )
 output_size = (25, 25) #base = 25
-difficulty = 8
+difficulty = 9
+#only 9 = (8,8)
+
 N_size = 2
 warnings.filterwarnings("ignore", category=matplotlib.cbook.mplDeprecation)
 directions = Directions(output_size)
@@ -70,6 +73,8 @@ def main():
 
     
     def get_offset_tiles(pattern: Pattern, offset: tuple):
+
+
         if offset == (0, 0):
             return pattern.pixels
         if offset == (-1, -1):

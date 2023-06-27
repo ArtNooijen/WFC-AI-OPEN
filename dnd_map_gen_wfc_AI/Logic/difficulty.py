@@ -19,5 +19,7 @@ class difficultyPixels:
             return colorChangePixels.cr7
         elif dif == 8:
             return colorChangePixels.cr8
+        elif dif == 9:
+            return colorChangePixels.cr9
         else:
             return colorChangePixels.cr1
