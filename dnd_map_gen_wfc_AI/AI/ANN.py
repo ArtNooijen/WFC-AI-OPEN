@@ -3,7 +3,8 @@ from keras.layers import Dense, Lambda
 import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
-
+import seaborn as sns
+import pandas as pd
 np.random.seed(0)
 
 model = Sequential()
@@ -38,11 +39,13 @@ print(y_pred[:5] * 9)
 score = model.evaluate(X_test, y_test, verbose=0)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
-
-# Fit the model and store training stats
+data = np.hstack((X_train, y_train.reshape(-1,1))) 
+df = pd.DataFrame(data, columns=['Current Health', 'Level', 'Time', 'Difficulty'])
+sns.pairplot(df)
+corr = df.corr()
+sns.heatmap(corr, annot=True, cmap='coolwarm')
 history = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=20, batch_size=1, verbose=1)
 
-# Plot training & validation accuracy values
 plt.figure(figsize=[10,5])
 plt.subplot(1, 2, 1)
 plt.plot(history.history['accuracy'])
@@ -52,7 +55,6 @@ plt.ylabel('Accuracy')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper left')
 
-# Plot training & validation loss values
 plt.subplot(1, 2, 2)
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
@@ -63,6 +65,7 @@ plt.legend(['Train', 'Test'], loc='upper left')
 
 plt.tight_layout()
 plt.show()
+
 
 
 
