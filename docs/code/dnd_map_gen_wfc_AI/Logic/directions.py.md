@@ -4,50 +4,50 @@
 
 ## Model qwen3:8b
 
-### 1. Purpose Summary  
-The `directions.py` file defines a `Directions` class that manages directional vectors and determines valid movement directions for a grid-based map. It provides utility to:  
-- Represent directional offsets (e.g., `UP = (0, -1)`).  
-- Return all possible directions.  
-- Validate which directions are allowed for a given position based on map boundaries.  
-This is critical for applications like dungeon generation (WFC algorithm) where movement must respect grid limits.  
+### 1. **Purpose Summary**  
+The `Directions` class defines directional vectors for movement in a 2D grid and provides logic to determine valid directions from a given position. It supports 8-directional movement (up, down, left, right, and diagonals) and ensures directions are constrained by grid boundaries. This is critical for algorithms like Wave Function Collapse (WFC) that require spatial validity checks for tile placement or propagation.
 
 ---
 
-### 2. Key Functions/Classes and Collaboration  
-**Class**: `Directions`  
-- **Class Variables**:  
-  - `UP`, `LEFT`, `DOWN`, `RIGHT`, and diagonal directions (`UP_LEFT`, etc.) as tuples representing coordinate deltas.  
-  - `dirs`: List of all 8 directions.  
-- **Methods**:  
-  - `__init__(self, output_size)`: Initializes with map dimensions (assumed to be a tuple `(width, height)`).  
-  - `give_dirs()`: Returns the full list of directions.  
-  - `valid_dirs(self, pos)`: Computes valid directions for a given `(x, y)` position by checking edge cases (e.g., walls).  
+### 2. **Key Functions/Classes and Collaboration**  
+- **`Directions` class**:  
+  - **`__init__`**: Initializes with grid dimensions (`output_size`), which are used to validate positions.  
+  - **`give_dirs`**: Returns the list of all 8 directional vectors (`dirs`).  
+  - **`valid_dirs`**:  
+    - Takes a `(x, y)` position and returns valid directions based on grid boundaries.  
+    - **Logic**:  
+      - **Edges**: If `x` is at the left/right edge or `y` is at the top/bottom edge, restricts movement to valid directions (e.g., no left movement if `x == 0`).  
+      - **Corners**: Further restricts diagonals when at grid corners (e.g., top-left corner allows only `DOWN` and `DOWN_RIGHT`).  
+      - **Interior**: Allows full 8-directional movement for positions not on edges.  
 
-**Collaboration**:  
-- `valid_dirs` uses the direction tuples to determine allowed movements. For example, if `x == 0` (left edge), it blocks left movement and allows right.  
-- The logic is grid-aware, ensuring no out-of-bounds positions.  
+- **Collaboration**:  
+  - The class is likely used by WFC algorithms to enforce spatial constraints during tile generation or propagation.  
+  - `valid_dirs` ensures tiles are only placed in valid directions, preventing out-of-bounds errors.
 
 ---
 
-### 3. External Dependencies or APIs Used  
+### 3. **External Dependencies or APIs Used**  
 - **None**: The file is self-contained. It does not rely on external libraries or APIs.  
+- **Assumed Usage**: The `output_size` parameter is expected to be a tuple `(rows, cols)` representing the grid dimensions.
 
 ---
 
-### 4. Extension Ideas, Pitfalls, or TODOs  
-**Extension Ideas**:  
-- **Dynamic Grid Support**: Add support for non-rectangular grids (e.g., hexagonal) by modifying direction logic.  
-- **Direction Prioritization**: Allow weighted direction choices for pathfinding or procedural generation.  
-- **Custom Boundary Rules**: Enable user-defined rules for valid directions (e.g., walls, obstacles).  
+### 4. **Extension Ideas, Pitfalls, or TODOs**  
+#### **Extension Ideas**  
+- **Dynamic Grid Support**: Add support for non-rectangular grids (e.g., irregular shapes) by modifying `valid_dirs` to accept a boundary map instead of fixed dimensions.  
+- **Direction Customization**: Allow users to define custom directions (e.g., 4-directional instead of 8) via configuration.  
+- **Position Validation**: Add a helper method to check if a position is within bounds (`is_valid_pos`) to avoid redundant checks.  
 
-**Pitfalls**:  
-- **Hardcoded Directions**: The direction tuples are hardcoded, which may make future modifications (e.g., adding new directions) cumbersome.  
-- **Nested Logic**: The `valid_dirs` method has deeply nested conditionals. Refactoring into helper functions (e.g., `is_edge(x)`, `is_corner(x, y)`) could improve readability.  
+#### **Pitfalls**  
+- **Edge Case Handling**: The current logic assumes a rectangular grid. If `output_size` is invalid (e.g., non-integer dimensions), it may cause errors.  
+- **1x1 Grid**: For grids with only one cell, `valid_dirs` would return an empty list, which may need special handling.  
+- **Direction Overlap**: Diagonal directions (e.g., `UP_RIGHT`) are treated as separate, but their validity depends on both x and y coordinates.  
 
-**TODOs**:  
-- Add docstrings for methods and class variables.  
-- Consider adding a `__repr__` or `__str__` method for debugging.  
-- Validate that `output_size` is non-empty in `__init__` to prevent errors.
+#### **TODOs**  
+- Add docstrings/comments to clarify the logic in `valid_dirs` (especially nested conditionals).  
+- Validate `output_size` in `__init__` to ensure it is a tuple of positive integers.  
+- Test edge cases (e.g., 1x1 grid, single-row/column grids) to ensure robustness.  
+- Consider adding a method to return only cardinal directions (up/down/left/right) if needed for specific use cases.
 
 ## Detected Imports
 

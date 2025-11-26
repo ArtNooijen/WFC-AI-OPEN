@@ -5,65 +5,60 @@
 ## Model qwen3:8b
 
 ### 1. **Purpose Summary**  
-The `PatternLogic` class is designed to generate and analyze patterns for use in a **Wave Function Collapse (WFC)** algorithm. Its primary purpose is to:  
-- **Extract all possible rotations** of N×N pixel blocks from a grid.  
-- **Calculate probability weights** for each unique pattern (including its rotations) to guide the WFC algorithm's stochastic generation of consistent, tileable maps.  
-- **Convert raw pixel data** into reusable `Pattern` objects with associated weights and probabilities.  
-
-This logic is critical for ensuring that generated maps maintain structural coherence while allowing for rotational variations of patterns.
+The `PatternLogic` class in `PatternLogic.py` is designed to generate and analyze **rotational patterns** for use in a **Walkable Finite State (WFC)** algorithm. Its primary purpose is to:  
+- Extract all unique **N×N pixel patterns** from a given matrix, including their **rotational variants** (90°, 180°, 270°).  
+- Calculate **weight probabilities** for each unique pattern to guide the WFC algorithm's stochastic generation of maps.  
+- Convert raw pattern data into reusable `Pattern` objects for further processing.  
 
 ---
 
 ### 2. **Key Functions/Classes and Collaboration**  
 **Key Components:**  
+- **`Pattern` class** (from `Logic.Pattern`): Represents a unique pattern with its rotations and probabilities.  
+- **`PatternLogic` class**: Central logic for pattern extraction and analysis.  
+
+**Key Functions:**  
 - **`get_all_rotations(pixelMatrix)`**:  
-  - **Purpose**: Generate all 4 rotations (0°, 90°, 180°, 270°) of a given N×N pixel matrix.  
-  - **Collaboration**: Used by `calculate_patterns_weights_probability` to handle rotational symmetry in pattern analysis.  
+  - Generates all 4 rotational variants of a square matrix (0°, 90°, 180°, 270°).  
+  - Returns tuples of rotated matrices for comparison.  
 
-- **`calculate_patterns_weights_probability(N, input_size, pixels)`**:  
-  - **Purpose**:  
-    1. Extract all N×N pixel blocks from the input grid.  
-    2. Generate their rotations and count occurrences (weights).  
-    3. Compute probabilities for each unique pattern.  
-    4. Convert raw pixel data into `Pattern` objects with weights/probabilities.  
-  - **Collaboration**: Relies on `get_all_rotations` to handle rotations and uses the `Pattern` class to encapsulate patterns for WFC.  
+- **`calculate_patterns_weights_propability(N, input_size, pixels)`**:  
+  - Iterates over the input matrix to extract **N×N sub-patterns**.  
+  - For each pattern, computes its **rotational variants** and counts their occurrences.  
+  - Calculates **weights** (frequency) and **probabilities** for each unique pattern.  
+  - Converts raw patterns into `Pattern` objects for downstream use.  
 
-**Collaboration Flow**:  
-- `calculate_patterns_weights_probability` processes the input grid, uses `get_all_rotations` to generate rotations, and aggregates statistics.  
-- The resulting `Pattern` objects are used by the WFC algorithm to enforce consistency across the generated map.  
+**Collaboration Flow:**  
+1. `get_all_rotations` generates rotational variants of a pattern.  
+2. `calculate_patterns_weights_propability` uses these rotations to count occurrences and compute probabilities.  
+3. Results are stored as `Pattern` objects, which are likely used in the WFC algorithm to guide tile placement.  
 
 ---
 
 ### 3. **External Dependencies or APIs Used**  
-- **`matplotlib.pyplot`**:  
-  - **Usage**: Not directly used in the provided code, but imported. Likely for visualization of patterns or debugging.  
-- **`math`**:  
-  - **Usage**: For mathematical operations (e.g., rotations, size calculations).  
-- **`Pattern` class (from `Logic.Pattern`)**:  
-  - **Purpose**: Represents a pattern with its rotations, weights, and probabilities.  
-  - **Collaboration**: The `calculate_patterns_weights_probability` method converts raw pixel data into `Pattern` objects.  
+- **`matplotlib.pyplot`**: Not directly used in the provided code, but imported. May be for future visualization of patterns.  
+- **`math`**: Used for mathematical operations (e.g., rotations, matrix manipulations).  
+- **`Pattern` class** (from `Logic.Pattern`): Stores pattern data (rotations, weights, probabilities) for reuse.  
 
 ---
 
 ### 4. **Extension Ideas, Pitfalls, or TODOs**  
-**Extension Ideas**:  
-- **Add Flipping Symmetry**: Support horizontal/vertical flips in addition to rotations for more pattern variations.  
-- **Optimize for Large Grids**: Implement spatial partitioning or parallel processing to handle large input sizes efficiently.  
-- **Integrate with WFC Algorithm**: Directly tie the `Pattern` objects to WFC's propagation logic for real-time constraint enforcement.  
+**Extension Ideas:**  
+- **Add flipping symmetry** (horizontal/vertical flips) to account for more pattern variations.  
+- **Optimize memory usage**: Current code stores all patterns as tuples, which may be inefficient for large matrices. Consider using hashable structures or compression.  
+- **Support non-square matrices**: The current rotation logic assumes square matrices. Extend to handle rectangular inputs.  
+- **Integrate with WFC algorithm**: Use the generated patterns and probabilities to implement the WFC tile generation logic.  
 
-**Pitfalls**:  
-- **Memory Usage**: Storing all unique patterns (especially for large grids) could consume significant memory. Consider pruning rare patterns.  
-- **Rotation Overlap**: Ensure that rotations are uniquely identified to avoid double-counting patterns.  
-- **Edge Cases**: Handle non-square grids or irregular input sizes gracefully.  
+**Pitfalls:**  
+- **Rotation logic errors**: The current rotation code may have edge cases (e.g., empty matrices, non-square inputs) that need validation.  
+- **Performance issues**: For large input sizes, the nested loops and duplicate-checking may be slow. Consider using sets or hash maps for faster deduplication.  
+- **Probability normalization**: Ensure the probability calculation handles edge cases (e.g., zero-weight patterns).  
 
-**TODOs**:  
-- **Implement Flipping Logic**: Extend `get_all_rotations` to include horizontal/vertical flips.  
-- **Add Visualization**: Use `matplotlib` to plot patterns and their probabilities for debugging.  
-- **Refactor for Efficiency**: Replace nested loops with vectorized operations or NumPy for faster processing.  
-
---- 
-
-This code forms the foundation for generating rotationally consistent patterns in a WFC-based procedural map generator, balancing flexibility and structural integrity.
+**TODOs:**  
+- Implement the actual WFC algorithm using the generated patterns.  
+- Add visualization with `matplotlib` to display patterns and their probabilities.  
+- Validate rotation logic for edge cases (e.g., 1×1 matrices, empty inputs).  
+- Optimize the `patterns_without_duplicates` step using more efficient data structures (e.g., `set`).
 
 ## Detected Imports
 

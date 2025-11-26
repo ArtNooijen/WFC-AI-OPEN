@@ -14,3 +14,4 @@ Generated pages:
 - [dnd_map_gen_wfc_AI/Logic/test.py](code/dnd_map_gen_wfc_AI/Logic/test.py.md)
 - [dnd_map_gen_wfc_AI/Tiles/onlyColorChangePixels.py](code/dnd_map_gen_wfc_AI/Tiles/onlyColorChangePixels.py.md)
 - [dnd_map_gen_wfc_AI/main.py](code/dnd_map_gen_wfc_AI/main.py.md)
+- [mkdocs.yml](code/mkdocs.yml.md)
